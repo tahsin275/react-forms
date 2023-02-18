@@ -12,7 +12,10 @@ function App() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [password, setPassword] = useState({
+        value: "",
+        isTouched: false,
+    });
     const [role, setRole] = useState("role");
 
     // capturing value for firstname
@@ -52,12 +55,8 @@ function App() {
 
     const getIsFormValid = () => {
         // Implement this function
-        if (firstName && email && password && role) {
-            if (validateEmail(email)) {
-                return true;
-            } else {
-                return false;
-            }
+        if (firstName && email && password && role != "role") {
+            return true;
         } else {
             return false;
         }
@@ -68,8 +67,11 @@ function App() {
         setFirstName("");
         setLastName("");
         setEmail("");
-        setPassword("");
-        setRole("");
+        setPassword({
+            value: "",
+            isTouched: false,
+        });
+        setRole("role");
     };
 
     const handleSubmit = (e) => {
