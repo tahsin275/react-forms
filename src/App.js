@@ -8,6 +8,10 @@ const PasswordErrorMessage = () => {
     );
 };
 
+const EmailErrorMessage = () => {
+    return <p className="FieldError">Invalid Email Address!!</p>;
+};
+
 function App() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -23,39 +27,34 @@ function App() {
         setFirstName(event.target.value);
     };
 
-    console.log(firstName);
-
     // capturing value for lastname
     const setLName = (event) => {
         setLastName(event.target.value);
     };
-
-    console.log(lastName);
 
     // capturing value for email
     const setEmailAddr = (event) => {
         setEmail(event.target.value);
     };
 
-    console.log(email);
-
     // capturing value for password
     const setPass = (event) => {
-        setPassword(event.target.value);
+        setPassword({ ...password, value: event.target.value });
     };
-
-    console.log(password);
 
     // capturing value for email
     const setUserRole = (event) => {
         setRole(event.target.value);
     };
 
-    console.log(role);
-
     const getIsFormValid = () => {
         // Implement this function
-        if (firstName && email && password && role != "role") {
+        if (
+            firstName &&
+            validateEmail(email) &&
+            password.value.length >= 8 &&
+            role != "role"
+        ) {
             return true;
         } else {
             return false;
@@ -76,12 +75,11 @@ function App() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (password.length < 8) {
-            PasswordErrorMessage();
-        } else {
-            alert("Account created!");
-            clearForm();
-        }
+        alert("Account created!");
+        console.log(
+            `First Name: ${firstName}, Last Name: ${lastName}, Email: ${email}, Password: hidden, Role: ${role}`
+        );
+        clearForm();
     };
 
     return (
@@ -116,6 +114,9 @@ function App() {
                             value={email}
                             onChange={setEmailAddr}
                         />
+                        {email && password.value && !validateEmail(email) ? (
+                            <EmailErrorMessage />
+                        ) : null}
                     </div>
                     <div className="Field">
                         <label>
@@ -125,8 +126,14 @@ function App() {
                             placeholder="Password"
                             value={password.value}
                             onChange={setPass}
+                            onBlur={() => {
+                                setPassword({ ...password, isTouched: true });
+                            }}
                             type="password"
                         />
+                        {password.isTouched && password.value.length < 8 ? (
+                            <PasswordErrorMessage />
+                        ) : null}
                     </div>
                     <div className="Field">
                         <label>
